@@ -1,9 +1,13 @@
+use serde::de::Deserializer;
 use serde_derive::Deserialize;
 
-use crate::post::Post;
+use crate::post::{Post, PostPre};
 
+/// Represents a thread as seen from the catalog.
+///
+/// To get all the posts in a thread, call `[Client::get_full_thread]`.
 #[derive(Clone, Debug, Deserialize)]
-pub struct Thread {
+pub struct ThreadInfo {
     /// The `Post` of the OP.
     #[serde(flatten)]
     pub op_post: Post,
@@ -48,8 +52,72 @@ pub struct Thread {
     pub semantic_url: String,
 }
 
-impl Thread {
+impl ThreadInfo {
     pub fn thread_no(&self) -> u32 {
         self.op_post.no
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Thread {
+    /// The no of the thread.
+    pub no: u32,
+    /// `true` if the thread is pinned on top of the page.
+    pub sticky: bool,
+    /// `true` if the thread is closed.
+    pub closed: bool,
+    /// The threads title, if any.
+    pub subject: Option<String>,
+    /// Number of unique posters in this thread.
+    pub unique_posters: i32,
+    /// Every post in this thread.
+    pub posts: Vec<Post>,
+}
+
+#[derive(Deserialize)]
+struct ThreadPre {
+    posts: Vec<ThreadPost>,
+}
+
+#[derive(Deserialize)]
+struct ThreadPost {
+    #[serde(default, deserialize_with = "crate::int_to_bool")]
+    sticky: bool,
+    #[serde(default, deserialize_with = "crate::int_to_bool")]
+    closed: bool,
+    #[serde(rename = "sub")]
+    subject: Option<String>,
+    unique_ips: Option<i32>,
+
+    #[serde(flatten)]
+    post: PostPre,
+}
+
+impl<'de> serde::Deserialize<'de> for Thread {
+    fn deserialize<D>(des: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let posts = ThreadPre::deserialize(des)?.posts;
+        let op = &posts[0];
+        let unique_posters = op.unique_ips.unwrap_or_default();
+        let sticky = op.sticky;
+        let closed = op.closed;
+        let subject = op.subject.clone();
+        let no = op.post.no;
+
+        let posts = posts
+            .into_iter()
+            .map(|p| Post::from(p.post))
+            .collect::<Vec<_>>();
+
+        Ok(Self {
+            no,
+            closed,
+            subject,
+            sticky,
+            unique_posters,
+            posts,
+        })
     }
 }

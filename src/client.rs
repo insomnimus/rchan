@@ -56,7 +56,7 @@ impl Client {
             .await
     }
 
-    pub async fn get_thread(&self, board_abv: &str, thread_no: u32) -> Result<Thread> {
+    pub async fn get_full_thread(&self, board_abv: &str, thread_no: u32) -> Result<Thread> {
         self.json::<Thread>(&format!(
             "{}{}/thread/{}",
             crate::BASE,

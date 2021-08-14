@@ -100,8 +100,8 @@ pub struct Post {
 }
 
 #[derive(Debug, Deserialize, Clone)]
-struct PostPre {
-    no: u32,
+pub(crate) struct PostPre {
+    pub no: u32,
     resto: u32,
     now: String,
     time: u64,
@@ -126,7 +126,7 @@ struct PostPre {
 }
 
 #[derive(Debug, Deserialize, Clone)]
-struct AttachmentPre {
+pub(crate) struct AttachmentPre {
     #[serde(default, rename = "tim")]
     uploaded: u64,
     filename: Option<String>,
@@ -152,45 +152,8 @@ struct AttachmentPre {
 
 impl<'de> serde::Deserialize<'de> for Post {
     fn deserialize<D: Deserializer<'de>>(des: D) -> Result<Self, D::Error> {
-        let PostPre {
-            no,
-            resto,
-            now,
-            time,
-            author,
-            trip,
-            author_id,
-            capcode,
-            country,
-            country_name,
-            board_flag,
-            flag_name,
-            comment,
-            attachment,
-            file_deleted,
-            since_4pass,
-        } = PostPre::deserialize(des)?;
-
-        let attachment = Attachment::try_from(attachment).ok();
-
-        Ok(Self {
-            no,
-            resto,
-            now,
-            time,
-            author,
-            trip,
-            author_id,
-            capcode,
-            country,
-            country_name,
-            board_flag,
-            flag_name,
-            comment,
-            attachment,
-            file_deleted,
-            since_4pass,
-        })
+        let pre = PostPre::deserialize(des)?;
+        Ok(pre.into())
     }
 }
 
@@ -226,6 +189,50 @@ impl TryFrom<AttachmentPre> for Attachment {
                 spoiler,
                 mobile_optimized,
             }),
+        }
+    }
+}
+
+impl From<PostPre> for Post {
+    fn from(pre: PostPre) -> Self {
+        let PostPre {
+            no,
+            resto,
+            now,
+            time,
+            author,
+            trip,
+            author_id,
+            capcode,
+            country,
+            country_name,
+            board_flag,
+            flag_name,
+            comment,
+            attachment,
+            file_deleted,
+            since_4pass,
+        } = pre;
+
+        let attachment = Attachment::try_from(attachment).ok();
+
+        Self {
+            no,
+            resto,
+            now,
+            time,
+            author,
+            trip,
+            author_id,
+            capcode,
+            country,
+            country_name,
+            board_flag,
+            flag_name,
+            comment,
+            attachment,
+            file_deleted,
+            since_4pass,
         }
     }
 }
