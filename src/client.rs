@@ -3,6 +3,7 @@ use crate::{
 		Board,
 		Boards,
 	},
+	catalog::Catalog,
 	error::Error,
 	Result,
 };
@@ -30,21 +31,30 @@ impl Client {
 }
 
 impl Client {
-	pub async fn get_boards(&self) -> Result<Vec<Board>> {
-		let resp = self
-			.client
-			.get(&format!("{}boards.json", crate::BASE))
-			.send()
-			.await?;
+	pub(crate) async fn json<T>(&self, path: &str) -> Result<T>
+	where
+		T: serde::de::DeserializeOwned,
+	{
+		let resp = self.client.get(path).send().await?;
 
 		if !resp.status().is_success() {
 			return Err(Error::status_code(resp.status()));
 		}
 
-		resp.text().await.map_err(Error::from).and_then(|s| {
-			serde_json::from_str(&s)
-				.map_err(Error::from)
-				.map(|x: Boards| x.boards)
-		})
+		resp.text()
+			.await
+			.map_err(Error::from)
+			.and_then(|s| serde_json::from_str(&s).map_err(Error::from))
+	}
+
+	pub async fn get_boards(&self) -> Result<Vec<Board>> {
+		self.json::<Boards>(&format!("{}boards.json", crate::BASE))
+			.await
+			.map(|x| x.boards)
+	}
+
+	pub async fn get_board_catalog(&self, board_abv: &str) -> Result<Catalog> {
+		self.json::<Catalog>(&format!("{}{}/catalog.json", crate::BASE, board_abv))
+			.await
 	}
 }
