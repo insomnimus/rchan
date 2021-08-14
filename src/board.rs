@@ -29,3 +29,8 @@ pub struct Cooldowns {
 	pub replies: usize,
 	pub images: usize,
 }
+
+#[derive(Deserialize)]
+pub(crate) struct Boards {
+	pub(crate) boards: Vec<Board>,
+}
