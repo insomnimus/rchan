@@ -7,8 +7,8 @@ pub struct Catalog(pub Vec<Page>);
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct Page {
-	/// The number of the page.
-	pub page: i32,
-	/// The list of threads in this page.
-	pub threads: Vec<Thread>,
+    /// The number of the page.
+    pub page: i32,
+    /// The list of threads in this page.
+    pub threads: Vec<Thread>,
 }
