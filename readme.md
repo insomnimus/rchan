@@ -1,4 +1,4 @@
-# fourchan
+# rchan
 
 This library is a [4chan JSON API][] wrapper.
 
@@ -10,7 +10,7 @@ This library is a [4chan JSON API][] wrapper.
 
 # Status
 
-Work in progress.
+The core of the library works, more features to be added.
 
 [4chan JSON API]: https://github.com/4chan/4chan-API
 [reqwest]: https://crates.io/crates/reqwest

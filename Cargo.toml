@@ -1,9 +1,9 @@
 [package]
-name = "fourchan"
+name = "rchan"
 version = "0.2.0"
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = [ "Taylan Gökkaya <insomnimus.dev@gmail.com>" ]
+license = "MIT"
 
 [dependencies]
 reqwest = "0.11.4"
