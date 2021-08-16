@@ -1,14 +1,14 @@
 use serde::de::Deserializer;
 use serde_derive::Deserialize;
 
-use crate::post::{Post, PostPre};
+use crate::post::{post_pre::PostPre, Post};
 
 /// Represents a thread as seen from the catalog.
 ///
 /// To get all the posts in a thread, call `[Client::get_full_thread]`.
 #[derive(Clone, Debug, Deserialize)]
 pub struct ThreadInfo {
-    /// The `Post` of the OP.
+    /// The [`Post`] of the OP.
     #[serde(flatten)]
     pub op_post: Post,
     /// `true` if the thread is pinned on top of the page.
