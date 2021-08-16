@@ -100,7 +100,7 @@ pub struct Post {
 	pub file_deleted: bool,
 
 	/// The year 4chan pass was bought.
-	pub since_4pass: i32,
+	pub since_4pass: Option<i32>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -123,10 +123,14 @@ pub(crate) struct PostPre {
 	comment: Option<String>,
 	#[serde(flatten)]
 	attachment: AttachmentPre,
-	#[serde(rename = "filedeleted")]
+	#[serde(
+		rename = "filedeleted",
+		default,
+		deserialize_with = "crate::int_to_bool"
+	)]
 	file_deleted: bool,
 	#[serde(rename = "since4pass")]
-	since_4pass: i32,
+	since_4pass: Option<i32>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -150,7 +154,7 @@ pub(crate) struct AttachmentPre {
 	thumbnail_height: i32,
 	#[serde(default, deserialize_with = "crate::int_to_bool")]
 	spoiler: bool,
-	#[serde(rename = "m_img", deserialize_with = "crate::int_to_bool")]
+	#[serde(rename = "m_img", deserialize_with = "crate::int_to_bool", default)]
 	mobile_optimized: bool,
 }
 

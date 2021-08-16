@@ -1,3 +1,4 @@
+#![deny(rustdoc::broken_intra_doc_links)]
 // #![warn(missing_docs)]
 
 use std::fmt;
@@ -31,6 +32,10 @@ where
 		}
 
 		fn visit_i64<E: de::Error>(self, n: i64) -> ::std::result::Result<Self::Value, E> {
+			Ok(n != 0)
+		}
+
+		fn visit_u64<E: de::Error>(self, n: u64) -> ::std::result::Result<Self::Value, E> {
 			Ok(n != 0)
 		}
 	}

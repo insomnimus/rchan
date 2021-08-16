@@ -24,16 +24,16 @@ pub struct ThreadInfo {
 	#[serde(rename = "sub")]
 	pub subject: Option<String>,
 	/// The number of omitted replies.
-	#[serde(rename = "omitted_posts")]
+	#[serde(rename = "omitted_posts", default)]
 	pub posts_omitted: i32,
 	/// The number of omitted images.
-	#[serde(rename = "omitted_images")]
+	#[serde(rename = "omitted_images", default)]
 	pub images_omitted: i32,
 	/// The total count of replies.
 	#[serde(rename = "replies")]
 	pub n_replies: i32,
 	/// The total number of images in a thread.
-	#[serde(rename = "images")]
+	#[serde(rename = "images", default)]
 	pub n_images: i32,
 	/// `true` if the bump limit is reached.
 	#[serde(
