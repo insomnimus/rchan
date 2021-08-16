@@ -32,11 +32,11 @@ pub(crate) struct PostPre {
 
 #[derive(Debug, Deserialize, Clone)]
 pub(crate) struct AttachmentPre {
-    #[serde(default, rename = "tim")]
-    uploaded: u64,
-    filename: Option<String>,
+    #[serde(rename = "tim")]
+    id: Option<u64>,
     #[serde(default)]
-    ext: String,
+    filename: String,
+    ext: Option<String>,
     #[serde(default, rename = "fsize")]
     size: u64,
     #[serde(default)]
@@ -60,7 +60,7 @@ impl TryFrom<AttachmentPre> for Attachment {
     fn try_from(pre: AttachmentPre) -> Result<Self, Self::Error> {
         let AttachmentPre {
             filename,
-            uploaded,
+            id,
             ext,
             size,
             md5,
@@ -72,12 +72,12 @@ impl TryFrom<AttachmentPre> for Attachment {
             mobile_optimized,
         } = pre;
 
-        match filename {
-            None => Err("the attachment has no filename"),
-            Some(f) => Ok(Self {
-                uploaded,
-                filename: f,
-                ext,
+        match (id, ext) {
+            (None, _) | (_, None) => Err("the ext and the id field must not be None"),
+            (Some(i), Some(x)) => Ok(Self {
+                id: i,
+                filename,
+                ext: x,
                 size,
                 md5,
                 width,

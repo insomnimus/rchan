@@ -20,7 +20,8 @@ pub enum Capcode {
 #[derive(Debug, Clone)]
 pub struct Attachment {
     /// A UNIX timestamp + micro time of when the image was uploaded.
-    pub uploaded: u64,
+    /// This serves as the image ID.
+    pub id: u64,
     /// The name of the attachment file.
     pub filename: String,
     /// The extension of the attachment.
@@ -47,17 +48,28 @@ pub struct Attachment {
 pub struct Post {
     /// The number of the post.
     pub no: u32,
-    /// The reply-to number for this post. `0` for the OP.
+    /// For replies: this is the ID of the thread being replied to. For OP: this value is zero.
     pub resto: u32,
+    /// MM/DD/YY(Day)HH:MM (:SS on some boards), EST/EDT timezone.
     pub now: String,
+    /// UNIX timestamp the post was created.
     pub time: u64,
+    /// The name user posted with, defaults to anonymous.
     pub author: String,
+    /// The user's tripcode, in format: !tripcode or !!securetripcode.
     pub trip: Option<String>,
+    /// The posters ID.
     pub author_id: Option<String>,
+    /// The caption code of the post, if any.
     pub capcode: Option<Capcode>,
+    /// Poster's ISO 3166-1 alpha-2 country code.
+    /// Only available in certain boards.
     pub country: Option<String>,
+    /// Posters country name. Only available in some boards.
     pub country_name: Option<String>,
+    /// Posters board flag code. Only available in certain boards.
     pub board_flag: Option<String>,
+    /// Posters board flag name. Only available in certain boards.
     pub flag_name: Option<String>,
 
     /// The body of the post, if any. The comment is HTML escaped.
@@ -79,7 +91,7 @@ impl<'de> serde::Deserialize<'de> for Post {
 }
 
 impl Post {
-    /// Returns a URL where the media of this attachment
+    /// Returns a URL where the media of this posts attachment
     /// can be retreived from.
     ///
     /// # Arguments
@@ -91,13 +103,21 @@ impl Post {
     ///
     /// Calling this method with an invalid board name results in an invalid URL, not `None`.
     pub fn attachment_url(&self, board: &str) -> Option<String> {
-        self.attachment.as_ref().map(|a| {
-            format!(
-                "https://i.4cdn.org/{board}/{post_no}.{ext}",
-                board = board,
-                ext = &a.ext,
-                post_no = &self.no
-            )
-        })
+        self.attachment.as_ref().map(|a| a.url(board))
+    }
+}
+
+impl Attachment {
+    /// Returns the url for this attachment.
+    ///
+    /// # Arguments
+    /// -  `board`: The abbreviation of the board this attachment is in. (The api does not include it in the attachment).
+    pub fn url(&self, board: &str) -> String {
+        format!(
+            "https://i.4cdn.org/{board}/{post_no}{ext}",
+            board = board,
+            ext = &self.ext,
+            post_no = &self.id,
+        )
     }
 }

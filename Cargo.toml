@@ -1,9 +1,16 @@
 [package]
 name = "rchan"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2018"
+description = "4chan api wrapper and client."
 authors = [ "Taylan Gökkaya <insomnimus.dev@gmail.com>" ]
 license = "MIT"
+readme = "readme.md"
+repository = "https://github.com/insomnimus/rchan"
+keywords = [
+	"4chan", "api", "client", "image-board", "http",
+]
+categories = [ "api-bindings" ]
 
 [dependencies]
 reqwest = "0.11.4"
