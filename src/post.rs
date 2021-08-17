@@ -105,6 +105,14 @@ impl Post {
     pub fn attachment_url(&self, board: &str) -> Option<String> {
         self.attachment.as_ref().map(|a| a.url(board))
     }
+
+    /// Returns the thumbnail URL for this post, if there is any.
+    ///
+    /// # Arguments
+    /// -  `board`: The abbreviation of the board this post was posted in.
+    pub fn thumbnail_url(&self, board: &str) -> Option<String> {
+        self.attachment.as_ref().map(|a| a.thumbnail_url(board))
+    }
 }
 
 impl Attachment {
@@ -115,6 +123,19 @@ impl Attachment {
     pub fn url(&self, board: &str) -> String {
         format!(
             "https://i.4cdn.org/{board}/{post_no}{ext}",
+            board = board,
+            ext = &self.ext,
+            post_no = &self.id,
+        )
+    }
+
+    /// Returns the thumbnail URL for this attachment.
+    ///
+    /// # Arguments
+    /// -  `board`: The abbreviation of the board this post was posted in.
+    pub fn thumbnail_url(&self, board: &str) -> String {
+        format!(
+            "https://i.4cdn.org/{board}/{post_no}s{ext}",
             board = board,
             ext = &self.ext,
             post_no = &self.id,
