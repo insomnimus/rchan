@@ -6,7 +6,7 @@ pub(crate) struct PostPre {
     resto: u32,
     now: String,
     time: u64,
-    #[serde(rename = "name")]
+    #[serde(rename = "name", default)]
     author: String,
     trip: Option<String>,
     #[serde(rename = "id")]

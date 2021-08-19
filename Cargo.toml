@@ -1,6 +1,6 @@
 [package]
 name = "rchan"
-version = "0.2.3"
+version = "0.3.0"
 edition = "2018"
 description = "4chan api wrapper and client."
 authors = [ "Taylan Gökkaya <insomnimus.dev@gmail.com>" ]
