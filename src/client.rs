@@ -37,7 +37,7 @@ impl Client {
     where
         T: serde::de::DeserializeOwned,
     {
-        let resp = self.client.get(path).send().await?;
+        let resp = self.client.get(path.to_string()).send().await?;
 
         if !resp.status().is_success() {
             return Err(Error::status_code(resp.status()));
@@ -60,9 +60,13 @@ impl Client {
     ///
     /// # Arguments
     /// -  `board_abv`: The abbreviation of a board for example `mu`. Corresponds to the `abv` field of a [`Board`].
-    pub async fn get_board_catalog(&self, board_abv: &str) -> Result<Catalog> {
-        self.json::<Catalog>(&format!("{}{}/catalog.json", crate::BASE, board_abv))
-            .await
+    pub async fn get_board_catalog(&self, board_abv: impl ToString) -> Result<Catalog> {
+        self.json::<Catalog>(&format!(
+            "{}{}/catalog.json",
+            crate::BASE,
+            board_abv.to_string()
+        ))
+        .await
     }
 
     /// Gets a full [`Thread`].
@@ -70,11 +74,15 @@ impl Client {
     /// # Arguments
     /// -  `board_abv`: The abbreviation of a board; the `abv` field of a [`Board`].
     /// -  `thread_no`: The no of a thread. Can be obtained by calling [`crate::thread::ThreadInfo::thread_no`]. Corresponds to the `no` field of the OP.
-    pub async fn get_full_thread(&self, board_abv: &str, thread_no: u32) -> Result<Thread> {
+    pub async fn get_full_thread(
+        &self,
+        board_abv: impl ToString,
+        thread_no: u32,
+    ) -> Result<Thread> {
         self.json::<Thread>(&format!(
             "{}{}/thread/{}.json",
             crate::BASE,
-            board_abv,
+            board_abv.to_string(),
             thread_no
         ))
         .await

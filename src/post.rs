@@ -102,15 +102,15 @@ impl Post {
     /// therefore this is currently an argument.
     ///
     /// Calling this method with an invalid board name results in an invalid URL, not `None`.
-    pub fn attachment_url(&self, board: &str) -> Option<String> {
-        self.attachment.as_ref().map(|a| a.url(board))
+    pub fn attachment_url(&self, board: impl ToString) -> Option<String> {
+        self.attachment.as_ref().map(|a| a.url(board.to_string()))
     }
 
     /// Returns the thumbnail URL for this post, if there is any.
     ///
     /// # Arguments
     /// -  `board`: The abbreviation of the board this post was posted in.
-    pub fn thumbnail_url(&self, board: &str) -> Option<String> {
+    pub fn thumbnail_url(&self, board: impl ToString) -> Option<String> {
         self.attachment.as_ref().map(|a| a.thumbnail_url(board))
     }
 }
@@ -120,10 +120,10 @@ impl Attachment {
     ///
     /// # Arguments
     /// -  `board`: The abbreviation of the board this attachment is in. (The api does not include it in the attachment).
-    pub fn url(&self, board: &str) -> String {
+    pub fn url(&self, board: impl ToString) -> String {
         format!(
             "https://i.4cdn.org/{board}/{post_no}{ext}",
-            board = board,
+            board = board.to_string(),
             ext = &self.ext,
             post_no = &self.id,
         )
@@ -133,10 +133,10 @@ impl Attachment {
     ///
     /// # Arguments
     /// -  `board`: The abbreviation of the board this post was posted in.
-    pub fn thumbnail_url(&self, board: &str) -> String {
+    pub fn thumbnail_url(&self, board: impl ToString) -> String {
         format!(
             "https://i.4cdn.org/{board}/{post_no}s{ext}",
-            board = board,
+            board = board.to_string(),
             ext = &self.ext,
             post_no = &self.id,
         )
