@@ -12,8 +12,14 @@ keywords = [
 ]
 categories = [ "api-bindings" ]
 
+[features]
+default = ["native-tls"]
+
+native-tls = ["reqwest/native-tls"]
+rustls-tls = ["reqwest/rustls-tls"]
+
 [dependencies]
-reqwest = "0.11.4"
+reqwest = { version = "0.11.4", default-features = false }
 serde = "1.0.127"
 serde_derive = "1.0.127"
 serde_json = "1.0.66"
