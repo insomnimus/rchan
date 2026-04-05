@@ -1,6 +1,6 @@
 [package]
 name = "rchan"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2018"
 description = "4chan api wrapper and client."
 authors = [ "Taylan Gökkaya <insomnimus.dev@gmail.com>" ]
@@ -19,7 +19,7 @@ native-tls = ["reqwest/native-tls"]
 rustls-tls = ["reqwest/rustls-tls"]
 
 [dependencies]
-reqwest = { version = "0.11.4", default-features = false }
-serde = "1.0.127"
-serde_derive = "1.0.127"
-serde_json = "1.0.66"
+reqwest = { version = "0.11.27", default-features = false }
+serde = "1.0.228"
+serde_derive = "1.0.228"
+serde_json = "1.0.149"
